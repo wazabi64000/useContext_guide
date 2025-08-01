@@ -1,0 +1,43 @@
+body {
+  font-family: Arial, sans-serif;
+  background: #f4f4f4;
+  color: #333;
+  padding: 2rem;
+  line-height: 1.6;
+  display: grid;
+ grid-template-columns: 200px auto;
+ height: 100vh; 
+}
+   
+ .nav {
+  background-color: #eee;
+  padding: 1rem;
+}
+
+header {
+  margin-bottom: 2rem;
+}
+code {
+ 
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+pre {
+  background: #222;
+  color: #0f0;
+  padding: 1rem;
+  overflow-x: auto;
+  border-radius: 8px;
+}
+a {
+  color: #007acc;
+  text-decoration: none;
+}
+h1, h2 {
+  color: #222;
+}
+
+.main {
+  background-color: #fafafa;
+  padding: 1rem;
+}

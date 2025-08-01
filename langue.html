@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Gestion de la langue (i18n) avec React, Context et localStorage</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <nav class="nav">
+  <ul>
+    <li><a href="theme.html">Thème (clair/sombre)</a></li>
+    <li><a href="auth.html">Authentification</a></li>
+    <li><a href="langue.html">Langue (i18n)</a></li>
+    <li><a href="panier.html">Panier (E-commerce)</a></li>
+    <li><a href="compteur.html">Compteur global</a></li>
+  </ul>
+
+
+</nav>
+
+
+
+<div class="main">
+
+  <h1>Gestion complète de la langue (i18n) avec React, Context et localStorage</h1>
+
+  <section>
+    <h2>1. Qu'est-ce que l’i18n ?</h2>
+    <p>
+      <strong>i18n</strong> signifie <em>internationalisation</em> : c’est la capacité d’une application à gérer plusieurs langues et formats culturels.
+    </p>
+  </section>
+
+  <section>
+    <h2>2. Pourquoi utiliser React Context pour la langue ?</h2>
+    <p>
+      Context permet de partager la langue dans toute l’application sans passer la langue dans chaque composant via les props.
+    </p>
+  </section>
+
+  <section>
+    <h2>3. Stockage de la langue choisie</h2>
+    <p>
+      Plusieurs options existent :
+    </p>
+    <ul>
+      <li><strong>localStorage</strong> : stocke la langue côté navigateur, simple et persistant entre sessions.</li>
+      <li><strong>Cookies</strong> : accessibles côté serveur et client, utiles pour les apps avec backend.</li>
+      <li><strong>API / base de données</strong> : sauvegarde la langue côté serveur, utile si l’utilisateur est connecté.</li>
+      <li><strong>URL / Query params</strong> : la langue est définie dans l’URL, pratique pour le SEO.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>4. Exemple React complet</h2>
+    <pre><code>
+import React, { createContext, useState, useEffect, useContext } from "react";
+
+// Création du contexte
+const LangueContext = createContext();
+
+// Traductions
+const traductions = {
+  fr: { bienvenue: "Bienvenue", bouton: "Changer langue" },
+  en: { bienvenue: "Welcome", bouton: "Change language" },
+  eu: { bienvenue: "Ongietorri", bouton: "Hizkuntza aldatu" }
+};
+
+// Provider
+export function LangueProvider({ children }) {
+  const [langue, setLangue] = useState("fr");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("langue");
+    if (saved) setLangue(saved);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("langue", langue);
+  }, [langue]);
+
+  return (
+    &lt;LangueContext.Provider value={{ langue, setLangue }}&gt;
+      {children}
+    &lt;/LangueContext.Provider&gt;
+  );
+}
+
+// Composant qui affiche la langue
+export function Message() {
+  const { langue, setLangue } = useContext(LangueContext);
+  const langues = ["fr", "en", "eu"];
+
+  const changerLangue = () => {
+    const currentIndex = langues.indexOf(langue);
+    const nextIndex = (currentIndex + 1) % langues.length;
+    setLangue(langues[nextIndex]);
+  };
+
+  return (
+    &lt;div&gt;
+      &lt;p&gt;{traductions[langue].bienvenue}&lt;/p&gt;
+      &lt;button onClick={changerLangue}&gt;{traductions[langue].bouton}&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// App principale
+export default function App() {
+  return (
+    &lt;LangueProvider&gt;
+      &lt;Message /&gt;
+    &lt;/LangueProvider&gt;
+  );
+}
+    </code></pre>
+  </section>
+
+  <section>
+    <h2>5. Autres options et bonnes pratiques</h2>
+    <ul>
+      <li>Détecter automatiquement la langue du navigateur (<code>navigator.language</code>).</li>
+      <li>Utiliser des fichiers JSON externes pour gérer plus facilement les traductions.</li>
+      <li>Bibliothèques spécialisées : <code>react-i18next</code>, <code>formatjs</code>, etc.</li>
+      <li>Gérer les pluriels, dates, formats monétaires selon la langue.</li>
+      <li>Stocker la préférence langue côté serveur pour les utilisateurs connectés.</li>
+      <li>Inclure la langue dans l’URL pour SEO et partage.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2>6. Résumé</h2>
+    <p>
+      Cette méthode React + Context + localStorage est idéale pour une gestion simple, rapide et côté client de la langue dans une app.  
+      Pour des projets plus complexes, préférez des outils et architectures dédiés.
+    </p>
+  </section>
+</div>
+</body>
+</html>

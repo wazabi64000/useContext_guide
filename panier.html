@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>useContext - Panier (E-commerce)</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+
+
+
+    <nav class="nav">
+  <ul>
+    <li><a href="theme.html">Thème (clair/sombre)</a></li>
+    <li><a href="auth.html">Authentification</a></li>
+    <li><a href="langue.html">Langue (i18n)</a></li>
+    <li><a href="panier.html">Panier (E-commerce)</a></li>
+    <li><a href="compteur.html">Compteur global</a></li>
+  </ul>
+
+
+</nav>
+
+
+
+<div class="main">
+
+  <header>
+    <h1>Cas 4 : Panier d'achat global avec useContext</h1>
+    <a href="index.html">Retour au menu</a>
+  </header>
+
+  <section>
+    <h2>Explication du cas</h2>
+    <p>
+      Dans une application e-commerce, on a souvent besoin d’un panier partagé entre plusieurs composants.  
+      <strong>useContext</strong> permet de centraliser et de partager la liste des produits ajoutés au panier sans passer par des props.
+    </p>
+  </section>
+
+  <section>
+    <h2>Explication du code</h2>
+    <p>
+      - Le <code>PanierContext</code> fournit la liste des articles, ainsi que les fonctions pour <code>ajouter</code> ou <code>retirer</code> un article.<br />
+      - Le <code>PanierProvider</code> encapsule le state global et le transmet à tous les composants enfants.<br />
+      - Deux composants permettent de tester : un pour ajouter des articles, un autre pour les afficher et les retirer.
+    </p>
+  </section>
+
+  <section>
+    <h2>Code React</h2>
+    <pre><code>
+import React, { useContext, useState } from "react";
+
+// Création du contexte
+const PanierContext = React.createContext();
+
+// Provider qui encapsule le panier
+function PanierProvider({ children }) {
+  const [panier, setPanier] = useState([]);
+
+  const ajouter = (article) => {
+    setPanier([...panier, article]);
+  };
+
+  const retirer = (index) => {
+    const nouveauPanier = panier.filter((_, i) => i !== index);
+    setPanier(nouveauPanier);
+  };
+
+  return (
+    &lt;PanierContext.Provider value={{ panier, ajouter, retirer }}&gt;
+      {children}
+    &lt;/PanierContext.Provider&gt;
+  );
+}
+
+// Composant pour ajouter des articles
+function ListeProduits() {
+  const { ajouter } = useContext(PanierContext);
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt>Produits disponibles&lt;/h3&gt;
+      &lt;button onClick={() => ajouter("Article 1")}&gt;Ajouter Article 1&lt;/button&gt;
+      &lt;button onClick={() => ajouter("Article 2")}&gt;Ajouter Article 2&lt;/button&gt;
+      &lt;button onClick={() => ajouter("Article 3")}&gt;Ajouter Article 3&lt;/button&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Composant pour afficher le panier
+function AffichagePanier() {
+  const { panier, retirer } = useContext(PanierContext);
+
+  return (
+    &lt;div&gt;
+      &lt;h3&gt;Contenu du panier&lt;/h3&gt;
+      &lt;ul&gt;
+        {panier.map((article, index) => (
+          &lt;li key={index}&gt;
+            {article}
+            &lt;button onClick={() => retirer(index)}&gt;Retirer&lt;/button&gt;
+          &lt;/li&gt;
+        ))}
+      &lt;/ul&gt;
+    &lt;/div&gt;
+  );
+}
+
+// Utilisation dans l'application
+function App() {
+  return (
+    &lt;PanierProvider&gt;
+      &lt;ListeProduits /&gt;
+      &lt;AffichagePanier /&gt;
+    &lt;/PanierProvider&gt;
+  );
+}
+    </code></pre>
+  </section>
+
+</div>
+</body>
+</html>

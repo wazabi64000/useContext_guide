@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Exemples useContext</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <nav class="nav">
+  <ul>
+    <li><a href="theme.html">Thème (clair/sombre)</a></li>
+    <li><a href="auth.html">Authentification</a></li>
+    <li><a href="langue.html">Langue (i18n)</a></li>
+    <li><a href="panier.html">Panier (E-commerce)</a></li>
+    <li><a href="compteur.html">Compteur global</a></li>
+  </ul>
+
+
+</nav>
+
+
+
+<div class="main">
+  
+  
+<section >
+  <header>
+    <h1>Exemples d'utilisation de useContext</h1>
+  </header>
+  <h2>Qu'est-ce que React Context ?</h2>
+  <p>
+    React Context est un outil qui permet de <strong>partager des données</strong> entre plusieurs composants de ton application, 
+    sans avoir à passer ces données explicitement via les <code>props</code> à chaque niveau.
+    </p>
+    <p>
+      Cela est très utile pour gérer des informations globales comme un thème (clair/sombre), un utilisateur connecté, une langue, ou un panier d’achat.
+    </p>
+  </section>
+  
+  <section>
+    <h2>Comment fonctionne React Context ?</h2>
+    <ol>
+      <li><strong>Créer un contexte :</strong> On crée un espace global avec <code>React.createContext()</code>.</li>
+      <li><strong>Fournir une valeur :</strong> Un composant <code>Provider</code> enveloppe les composants enfants et partage une valeur.</li>
+      <li><strong>Consommer la valeur :</strong> Les composants enfants utilisent <code>useContext</code> pour accéder directement à cette valeur.</li>
+    </ol>
+  </section>
+  
+  <section>
+    <h2>Analogie pour mieux comprendre</h2>
+    <div class="analogie">
+      <strong>Imagine un distributeur automatique de billets dans une banque :</strong><br />
+      - Le distributeur (le <code>Provider</code>) fournit l'argent (la valeur).<br />
+      - Les clients (les composants enfants) viennent retirer leur argent sans avoir besoin de passer par la banque directement.<br />
+      - Ainsi, l'argent circule facilement entre la banque et les clients sans que chaque étape intermédiaire ait besoin de le manipuler.<br />
+      C’est exactement ce que fait React Context avec les données dans ton application.
+    </div>
+  </section>
+  
+  <section>
+    <h2>Pourquoi utiliser Context ?</h2>
+    <p>
+      Sans context, il faudrait passer les données à travers toutes les couches de composants, ce qui rend le code lourd et difficile à maintenir. 
+      Avec context, la gestion de l’état global devient plus simple et claire.
+    </p>
+  </section>
+</div>
+
+</body>
+</html>

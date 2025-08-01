@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>useContext - Authentification avec token</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <ul>
+        <li><a href="theme.html">Thème (clair/sombre)</a></li>
+        <li><a href="auth.html">Authentification</a></li>
+        <li><a href="langue.html">Langue (i18n)</a></li>
+        <li><a href="panier.html">Panier (E-commerce)</a></li>
+        <li><a href="compteur.html">Compteur global</a></li>
+      </ul>
+    </nav>
+
+    <div class="main">
+
+      
+      <header>
+        <h1>Cas 2 : Authentification avec stockage token localStorage</h1>
+        <a href="index.html">Retour au menu</a>
+      </header>
+      
+      <section>
+        <h2>Explication</h2>
+        <p>
+          Ce cas montre comment gérer un système d'authentification simple avec
+          React en stockant un token dans <code>localStorage</code>.
+        </p>
+        <ul>
+          <li>Le token représente la preuve que l'utilisateur est connecté.</li>
+          <li>
+            Lors de la connexion, on génère (ou récupère) un token que l'on stocke
+            dans <code>localStorage</code> et dans l'état React.
+          </li>
+          <li>
+            Au démarrage, on vérifie si un token est déjà présent dans
+            <code>localStorage</code> pour maintenir la connexion.
+          </li>
+          <li>
+            Lors de la déconnexion, on supprime le token du stockage local et on
+            remet l’état React à <code>null</code>.
+          </li>
+          <li>
+            Le contexte React permet de partager ces informations et fonctions
+            entre plusieurs composants sans passer les props à chaque fois.
+          </li>
+        </ul>
+      </section>
+      
+      <section>
+        <h2>Code React complet</h2>
+        <pre><code>
+          import React, { useContext, useState, useEffect } from "react";
+          
+          const AuthContext = React.createContext();
+          
+          function AuthProvider({ children }) {
+            const [token, setToken] = useState(null);
+            
+            // Au démarrage, récupérer le token dans localStorage s'il existe
+            useEffect(() => {
+              const savedToken = localStorage.getItem("token");
+              if (savedToken) setToken(savedToken);
+            }, []);
+            
+            // Fonction pour "se connecter" (ici on simule un token)
+            const login = () => {
+              const fakeToken = "abc123token";
+              localStorage.setItem("token", fakeToken);
+              setToken(fakeToken);
+            };
+            
+            // Fonction pour se déconnecter
+            const logout = () => {
+              localStorage.removeItem("token");
+              setToken(null);
+            };
+            
+            return (
+              &lt;AuthContext.Provider value={{ token, login, logout }}&gt;
+              {children}
+              &lt;/AuthContext.Provider&gt;
+              );
+            }
+            
+            function UserStatus() {
+              const { token, login, logout } = useContext(AuthContext);
+              
+              return token ? (
+                &lt;div&gt;
+                Connecté (token: {token})
+      &lt;button onClick={logout}&gt;Se déconnecter&lt;/button&gt;
+    &lt;/div&gt;
+    ) : (
+      &lt;button onClick={login}&gt;Se connecter&lt;/button&gt;
+      );
+    }
+    
+    function App() {
+      return (
+        &lt;AuthProvider&gt;
+        &lt;UserStatus /&gt;
+        &lt;/AuthProvider&gt;
+        );
+}
+</code></pre>
+</section>
+
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <title>useContext - Compteur global</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="nav">
+      <ul>
+        <li><a href="theme.html">Thème (clair/sombre)</a></li>
+        <li><a href="auth.html">Authentification</a></li>
+        <li><a href="langue.html">Langue (i18n)</a></li>
+        <li><a href="panier.html">Panier (E-commerce)</a></li>
+        <li><a href="compteur.html">Compteur global</a></li>
+      </ul>
+    </nav>
+
+    <div class="main">
+      <header>
+        <h1>Cas 5 : Compteur global</h1>
+        <a href="index.html">Retour au menu</a>
+      </header>
+
+      <section>
+        <h2>Explication du cas</h2>
+        <p>
+          On partage un compteur entre plusieurs composants grâce à un contexte.
+          On peut l’incrémenter, le décrémenter ou le réinitialiser.
+        </p>
+      </section>
+
+      <section>
+        <h2>Explication du code</h2>
+        <p>
+          Le <code>CompteurContext</code> contient l’état du compteur et les
+          fonctions d’action. Deux composants utilisent le contexte pour
+          afficher ou modifier la valeur.
+        </p>
+      </section>
+
+      <section>
+        <h2>Code React</h2>
+        <pre><code>
+      import React, { useContext, useState } from "react";
+      
+      const CompteurContext = React.createContext();
+      
+      function CompteurProvider({ children }) {
+        const [compteur, setCompteur] = useState(0);
+        
+        return (
+          &lt;CompteurContext.Provider value={{
+            compteur,
+            incrementer: () =&gt; setCompteur(c =&gt; c + 1),
+            decrementer: () =&gt; setCompteur(c =&gt; c - 1),
+            reset: () =&gt; setCompteur(0),
+          }}&gt;
+          {children}
+          &lt;/CompteurContext.Provider&gt;
+  );
+}
+
+function Affichage() {
+  const { compteur } = useContext(CompteurContext);
+  return &lt;h3&gt;Valeur : {compteur}&lt;/h3&gt;;
+}
+
+function Boutons() {
+  const { incrementer, decrementer, reset } = useContext(CompteurContext);
+  return (
+    &lt;div&gt;
+    &lt;button onClick={incrementer}&gt;+1&lt;/button&gt;
+    &lt;button onClick={decrementer}&gt;-1&lt;/button&gt;
+    &lt;button onClick={reset}&gt;Reset&lt;/button&gt;
+    &lt;/div&gt;
+    );
+  }
+  
+  function App() {
+    return (
+      &lt;CompteurProvider&gt;
+      &lt;Affichage /&gt;
+      &lt;Boutons /&gt;
+      &lt;/CompteurProvider&gt;
+  );
+}
+</code></pre>
+      </section>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Cours React : Structure et Thème</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <nav class="nav">
+    <ul>
+      <li><a href="theme.html">Thème (clair/sombre)</a></li>
+      <li><a href="auth.html">Authentification</a></li>
+      <li><a href="langue.html">Langue (i18n)</a></li>
+      <li><a href="panier.html">Panier (E-commerce)</a></li>
+      <li><a href="compteur.html">Compteur global</a></li>
+    </ul>
+  </nav>
+
+  <main class="main">
+    <h1>Cours : Structure d’un projet React avec changement de thème</h1>
+
+    <section>
+      <h2>0. Qu’est-ce que <code>Context</code> et <code>Provider</code> ?</h2>
+      <p><strong>React Context</strong> est un mécanisme qui permet de <em>partager des données globales</em> (comme un thème, la langue, ou les données utilisateur) à travers toute l'application, sans avoir à passer ces données manuellement via les props à chaque composant.</p>
+
+      <p><strong>Le <code>Provider</code></strong> est un composant React qui va <em>fournir la valeur du contexte</em> à tous les composants enfants qui en ont besoin. Il enveloppe généralement une partie ou la totalité de l'application.</p>
+
+      <p>Concrètement :</p>
+      <ul>
+        <li>On crée un <code>Context</code> avec <code>React.createContext()</code>.</li>
+        <li>Le <code>Provider</code> utilise ce contexte pour donner une valeur (par exemple le thème actuel).</li>
+        <li>Les composants enfants peuvent accéder à cette valeur via le hook <code>useContext</code>.</li>
+      </ul>
+
+      <p>Dans notre exemple :</p>
+      <ul>
+        <li><code>ThemeContext</code> est le contexte qui porte la valeur du thème.</li>
+        <li><code>ThemeProvider</code> est le composant qui contient l'état du thème et fournit la valeur du thème et la fonction <code>toggleTheme</code> aux enfants via <code>ThemeContext.Provider</code>.</li>
+        <li><code>ThemedButton</code> consomme le contexte pour afficher et changer le thème.</li>
+      </ul>
+
+      <p>Cela évite de passer les props "à la chaîne" et facilite la gestion de l’état global dans une app React.</p>
+    </section>
+
+
+<h2> 1. Arborescence des fichiers</h2>
+
+<pre><code>src/
+  │
+├── App.jsx                  // Composant principal
+├── main.jsx                // Point d’entrée de l’app
+├── index.css               // Styles globaux
+└── context/
+└── ThemeProvider.jsx   // Contexte du thème + bouton</code></pre>
+
+<h2> 2. Règles de nommage</h2>
+<ul>
+  <li> Les fichiers React ont l’extension <code>.jsx</code></li>
+  <li> Les composants sont en PascalCase (ex: <code>ThemeProvider</code>)</li>
+  <li> Organise les fichiers par rôle : les contextes dans <code>/context</code>, les pages dans <code>/pages</code>, etc.</li>
+  <li> Le fichier <code>main.jsx</code> contient <code>createRoot()</code></li>
+</ul>
+
+<h2> 3. Fichier : <code>ThemeProvider.jsx</code></h2>
+
+<p><strong>Chemin :</strong> <code>src/context/ThemeProvider.jsx</code></p>
+
+<pre><code>import React, { useContext, useState, useEffect } from "react";
+  
+  // Création du contexte
+  const ThemeContext = React.createContext();
+  
+  // Provider du thème
+  export function ThemeProvider({ children }) {
+    const [theme, setTheme] = useState(() =&gt; {
+      return localStorage.getItem("theme") || "light";
+    });
+    
+    useEffect(() =&gt; {
+      localStorage.setItem("theme", theme);
+    }, [theme]);
+    
+    const toggleTheme = () =&gt;
+    setTheme(prev =&gt; (prev === "light" ? "dark" : "light"));
+    
+    return (
+      &lt;ThemeContext.Provider value={{ theme, toggleTheme }}&gt;
+      &lt;div className={theme}&gt;{children}&lt;/div&gt;
+      &lt;/ThemeContext.Provider&gt;
+      );
+}
+
+// Bouton qui change le thème
+export function ThemedButton() {
+  const { theme, toggleTheme } = useContext(ThemeContext);
+  return (
+    &lt;button onClick={toggleTheme}&gt;
+    Thème actuel : {theme}
+    &lt;/button&gt;
+    );
+  }
+</code></pre>
+
+<h2> 4. Fichier : <code>App.jsx</code></h2>
+
+<pre><code>export default function App() {
+  return (
+    &lt;div&gt;
+    &lt;h1&gt;Bienvenue sur mon app !&lt;/h1&gt;
+    &lt;p&gt;Voici une application avec thème clair / sombre.&lt;/p&gt;
+    &lt;/div&gt;
+  );
+}
+</code></pre>
+
+<h2> 5. Fichier : <code>main.jsx</code></h2>
+
+  <pre><code>import React from 'react';
+    import { StrictMode } from 'react';
+    import { createRoot } from 'react-dom/client';
+    import './index.css';
+    import App from './App.jsx';
+    import { ThemeProvider, ThemedButton } from './context/ThemeProvider.jsx';
+
+    createRoot(document.getElementById('root')).render(
+      &lt;StrictMode&gt;
+      &lt;ThemeProvider&gt;
+      &lt;ThemedButton /&gt;
+      &lt;App /&gt;
+      &lt;/ThemeProvider&gt;
+      &lt;/StrictMode&gt;
+      );
+    </code></pre>
+
+    <h2> 6. Fichier : <code>index.css</code></h2>
+    
+    <pre><code>.light {
+      background-color: white;
+      color: black;
+    }
+    
+    .dark {
+  background-color: #1e1e1e;
+  color: white;
+}
+
+button {
+  padding: 0.5rem 1rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007acc;
+  color: white;
+}
+</code></pre>
+
+<h2> 7. Import / Export résumé</h2>
+<ul>
+    <li><code>export function Nom()</code> → export nommé</li>
+    <li><code>export default Nom</code> → export par défaut</li>
+    <li><code>import { Nom } from './fichier'</code> → import d’un export nommé</li>
+    <li><code>import Nom from './fichier'</code> → import d’un export par défaut</li>
+  </ul>
+  
+  <h2> 8. Résultat attendu</h2>
+  <ul>
+    <li>L'app démarre avec le bon thème</li>
+    <li>Un bouton affiche le thème actuel</li>
+    <li>Le thème est sauvegardé dans le navigateur</li>
+    <li>Le contexte est partagé dans toute l'application</li>
+  </ul>
+
+
+  </main>
+
+</body>
+</html>
